@@ -59,6 +59,7 @@ let _reactNavigationIsHydratingState = false;
 export default function createNavigationContainer(Component) {
   class NavigationContainer extends React.Component {
     subs = null;
+    linkingUrlEventListener
 
     static router = Component.router;
     static navigationOptions = null;
@@ -200,7 +201,7 @@ export default function createNavigationContainer(Component) {
         }
       }
       _statefulContainerCount++;
-      Linking.addEventListener('url', this._handleOpenURL);
+      this.linkingUrlEventListener = Linking.addEventListener('url', this._handleOpenURL);
 
       // Pull out anything that can impact state
       const { persistenceKey, uriPrefix, enableURLHandling } = this.props;
@@ -293,7 +294,7 @@ export default function createNavigationContainer(Component) {
 
     componentWillUnmount() {
       this._isMounted = false;
-      Linking.removeEventListener('url', this._handleOpenURL);
+      this.linkingUrlEventListener?.remove()
       this.subs && this.subs.remove();
 
       if (this._isStateful()) {
