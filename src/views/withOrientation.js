@@ -6,6 +6,8 @@ export const isOrientationLandscape = ({ width, height }) => width > height;
 
 export default function(WrappedComponent) {
   class withOrientation extends React.Component {
+    dimensionChangeEventListener
+
     constructor() {
       super();
 
@@ -14,11 +16,11 @@ export default function(WrappedComponent) {
     }
 
     componentDidMount() {
-      Dimensions.addEventListener('change', this.handleOrientationChange);
+     this.dimensionChangeEventListener = Dimensions.addEventListener('change', this.handleOrientationChange);
     }
 
     componentWillUnmount() {
-      Dimensions.removeEventListener('change', this.handleOrientationChange);
+      this.dimensionChangeEventListener?.remove()
     }
 
     handleOrientationChange = ({ window }) => {
